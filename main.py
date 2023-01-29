@@ -1,8 +1,10 @@
 import csv
+import shutil
 from argparse import ArgumentParser
 from enum import Enum
 
-FILENAME = "test.csv"
+MAIN_FILENAME = "test.csv"
+BACKUP_FILENAME = "backup.csv"
 
 
 class CATEGORY(Enum):
@@ -37,7 +39,7 @@ class Transaction:
         self.category = args.category
         self.address = args.address
         self.unit = args.unit
-        self.dollarAmount = args.dollar
+        self.dollarAmount = "${:.2f}".format(args.dollar)
         self.notes = args.notes
         self.source = args.source
         self.taxDemarcation = args.tax
@@ -51,9 +53,13 @@ class Transaction:
 # object.
 
 
+def copy_main_to_backup():
+    shutil.copy(MAIN_FILENAME, BACKUP_FILENAME)
+
+
 def add_transaction(transactionRow):
     transactionRowDict = transactionRow.__dict__
-    with open(FILENAME, "a+") as csvfile:
+    with open(MAIN_FILENAME, "a+") as csvfile:
         csvwriter = csv.DictWriter(csvfile, fieldnames=transactionRowDict.keys(), delimiter=",")
         csvwriter.writerow(transactionRowDict)
 
@@ -136,4 +142,5 @@ args = parser.parse_args()
 row = Transaction(args)
 
 if args.add:
+    copy_main_to_backup()
     add_transaction(row)
