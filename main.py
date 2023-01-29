@@ -1,10 +1,8 @@
 import csv
-import shutil
 from argparse import ArgumentParser
 from enum import Enum
 
 MAIN_FILENAME = "test.csv"
-BACKUP_FILENAME = "backup.csv"
 
 
 class CATEGORY(Enum):
@@ -51,10 +49,6 @@ class Transaction:
 # The input reader should convert the input into a "request" object, with
 # appropriate defaults. From there various helpers can simply operate on that
 # object.
-
-
-def copy_main_to_backup():
-    shutil.copy(MAIN_FILENAME, BACKUP_FILENAME)
 
 
 def add_transaction(transactionRow):
@@ -142,5 +136,4 @@ args = parser.parse_args()
 row = Transaction(args)
 
 if args.add:
-    copy_main_to_backup()
     add_transaction(row)
