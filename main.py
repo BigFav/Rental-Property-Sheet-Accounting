@@ -2,6 +2,8 @@ import csv
 from argparse import ArgumentParser
 from enum import Enum
 
+FILENAME = "test.csv"
+
 
 class CATEGORY(Enum):
     RENT = 1
@@ -29,46 +31,101 @@ class TAX_DEMARCATION(Enum):
     IMPROVEMENT = 2
 
 
-FILENAME = "test.csv"
+class Transaction:
+    def __init__(self, args):
+        self.date = args.date
+        self.category = args.category
+        self.address = args.address
+        self.unit = args.unit
+        self.dollarAmount = args.dollar
+        self.notes = args.notes
+        self.source = args.source
+        self.taxDemarcation = args.tax
+
 
 # Looking to have rows with the following columns:
-# Date,Category,Address,Unit#,DollarAmount,Notes,Source,TaxDemarcation
+# Date,Category,Address,Unit,DollarAmount,Notes,Source,TaxDemarcation
 
 # The input reader should convert the input into a "request" object, with
 # appropriate defaults. From there various helpers can simply operate on that
 # object.
 
 
-def add_transaction():
-    with open(FILENAME, "w") as csvfile:
-        csvwriter = csv.writer(csvfile, delimiter=",")
+def add_transaction(transactionRow):
+    transactionRowDict = transactionRow.__dict__
+    with open(FILENAME, "a+") as csvfile:
+        csvwriter = csv.DictWriter(csvfile, fieldnames=transactionRowDict.keys(), delimiter=",")
+        csvwriter.writerow(transactionRowDict)
 
 
 parser = ArgumentParser(description="Process transaction information, and persist it.")
 parser.add_argument(
     "--add",
-    type=bool,
+    action="store_true",
+    default=False,
     help="When present, will add the transaction defined by the other arguments.",
 )
 parser.add_argument(
-    "-d", "--date", type=str, help="The date of the transaction. Format month/day/year."
-)
-parser.add_argument("-c", "--category", type=CATEGORY, help="Category to bucket the transaction.")
-parser.add_argument("-a", "--address", type=str, help="Address of the property.")
-parser.add_argument(
-    "-u", "--unit", type=str, help="The specific unit relevant to the transaction."
-)
-parser.add_argument(
-    "-da", "--dollar", "--dollars", "-am", "--amount", type=float, help="Address of the property."
+    "-d",
+    "--date",
+    type=str,
+    required=True,
+    help="The date of the transaction. Format month/day/year.",
 )
 parser.add_argument(
-    "-n", "--notes", "--description", type=str, help="A note describing the transaction."
+    "-c",
+    "--category",
+    required=True,
+    choices=CATEGORY.__members__,
+    help="Category to bucket the transaction.",
 )
-parser.add_argument("-s", "--source", type=SOURCE, help="Where this transaction can be found.")
+parser.add_argument(
+    "-a",
+    "--address",
+    required=False,
+    default="",
+    type=str,
+    help="Address of the property.",
+)
+parser.add_argument(
+    "-u",
+    "--unit",
+    required=False,
+    default="",
+    type=str,
+    help="The specific unit relevant to the transaction.",
+)
+parser.add_argument(
+    "-da",
+    "--dollar",
+    "--dollars",
+    "-am",
+    "--amount",
+    required=True,
+    type=float,
+    help="Address of the property.",
+)
+parser.add_argument(
+    "-n",
+    "--notes",
+    "--description",
+    required=True,
+    type=str,
+    help="A note describing the transaction.",
+)
+parser.add_argument(
+    "-s",
+    "--source",
+    required=True,
+    choices=SOURCE.__members__,
+    help="Where this transaction can be found.",
+)
 parser.add_argument(
     "-t",
     "--tax",
-    type=TAX_DEMARCATION,
+    required=False,
+    choices=TAX_DEMARCATION.__members__,
+    default="",
     help="For expenses only. Is this transaction an improvement or repair? A capital improvement "
     "would include major work such as refurbishing the kitchen converting a room or attaching "
     "a conservatory. A repair on the other hand is general maintenance, for example, "
@@ -76,3 +133,7 @@ parser.add_argument(
     "appliances.",
 )
 args = parser.parse_args()
+row = Transaction(args)
+
+if args.add:
+    add_transaction(row)
