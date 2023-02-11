@@ -59,12 +59,6 @@ def add_transaction(transactionRow):
 
 parser = ArgumentParser(description="Process transaction information, and persist it.")
 parser.add_argument(
-    "--add",
-    action="store_true",
-    default=False,
-    help="When present, will add the transaction defined by the other arguments.",
-)
-parser.add_argument(
     "-d",
     "--date",
     type=str,
