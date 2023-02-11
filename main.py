@@ -125,6 +125,12 @@ parser.add_argument(
     "repairing a tap, repainting surfaces, fixing the air conditioning, or maintenance on "
     "appliances.",
 )
+parser.add_argument(
+    "--add",
+    action="store_true",
+    default=False,
+    help="When present, will add the transaction defined by the other arguments.",
+)
 args = parser.parse_args()
 row = Transaction(args)
 
