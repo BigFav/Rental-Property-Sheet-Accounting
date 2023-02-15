@@ -35,12 +35,17 @@ class Transaction:
     def __init__(self, args):
         self.date = args.date
         self.category = args.category
-        self.address = args.address
+        self.address = args.address.upper()
         self.unit = args.unit
-        self.dollarAmount = "${:.2f}".format(args.dollar)
-        self.notes = args.notes
+        self.dollar_amount = "${:.2f}".format(args.dollar).replace("$-", "-$")
         self.source = args.source
-        self.taxDemarcation = args.tax
+        self.tax_demarcation = args.tax
+        if args.notes:
+            self.notes = args.notes
+        elif args.category in ("RENT", "MANAGEMENT", "MORTGAGE"):
+            self.notes = self.category
+        else:
+            raise TypeError("Notes are required for nontrivial category.")
 
 
 # Looking to have rows with the following columns:
@@ -53,7 +58,20 @@ class Transaction:
 def add_transaction(transactionRow):
     transactionRowDict = transactionRow.__dict__
     with open(MAIN_FILENAME, "a+") as csvfile:
-        csvwriter = csv.DictWriter(csvfile, fieldnames=transactionRowDict.keys(), delimiter=",")
+        csvwriter = csv.DictWriter(
+            csvfile,
+            fieldnames=[
+                "date",
+                "category",
+                "address",
+                "unit",
+                "dollar_amount",
+                "notes",
+                "source",
+                "tax_demarcation",
+            ],
+            delimiter=",",
+        )
         csvwriter.writerow(transactionRowDict)
 
 
@@ -102,7 +120,7 @@ parser.add_argument(
     "-n",
     "--notes",
     "--description",
-    required=True,
+    required=False,
     type=str,
     help="A note describing the transaction.",
 )
