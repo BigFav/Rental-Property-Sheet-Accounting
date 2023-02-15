@@ -3,6 +3,13 @@ from argparse import ArgumentParser
 from enum import Enum
 
 MAIN_FILENAME = "test.csv"
+KNOWN_ADDRESSES = (
+    "17 S 15TH ST",
+    "513 S SHIPPEN ST",
+    "36 S 13TH ST",
+    "131 N 13TH ST",
+    "235 MACLAY ST",
+)
 
 
 class CATEGORY(Enum):
@@ -94,6 +101,7 @@ parser.add_argument(
     "-a",
     "--address",
     required=False,
+    choices=KNOWN_ADDRESSES,
     default="",
     type=str,
     help="Address of the property.",
