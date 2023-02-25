@@ -9,6 +9,7 @@ KNOWN_ADDRESSES = (
     "36 S 13TH ST",
     "131 N 13TH ST",
     "235 MACLAY ST",
+    "1011 WALNUT ST",
 )
 
 
@@ -23,6 +24,7 @@ class CATEGORY(Enum):
     GOVERNMENT_FEE = 8
     TAXES = 8
     INSURANCE = 9
+    CARRYOVER = 10
 
 
 class SOURCE(Enum):
@@ -31,6 +33,7 @@ class SOURCE(Enum):
     WELLS_BANK = 3
     BLUEVINE_BANK = 4
     CITI_CREDIT_CARD = 5
+    CARRYOVER = 6
 
 
 class TAX_DEMARCATION(Enum):
@@ -49,7 +52,7 @@ class Transaction:
         self.tax_demarcation = args.tax
         if args.notes:
             self.notes = args.notes
-        elif args.category in ("RENT", "MANAGEMENT", "MORTGAGE"):
+        elif args.category in ("RENT", "MANAGEMENT", "MORTGAGE", "CARRYOVER"):
             self.notes = self.category
         else:
             raise TypeError("Notes are required for nontrivial category.")
