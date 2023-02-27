@@ -3,14 +3,15 @@ from argparse import ArgumentParser
 from enum import Enum
 
 MAIN_FILENAME = "test.csv"
-KNOWN_ADDRESSES = (
-    "17 S 15TH ST",
-    "513 S SHIPPEN ST",
-    "36 S 13TH ST",
-    "131 N 13TH ST",
-    "235 MACLAY ST",
-    "1011 WALNUT ST",
-)
+
+
+class KNOWN_ADDRESSES(Enum):
+    _17_S_15TH_ST = "17 S 15TH ST"
+    _513_S_SHIPPEN_ST = "513 S SHIPPEN ST"
+    _36_S_13TH_ST = "36 S 13TH ST"
+    _131_N_13TH_ST = "131 N 13TH ST"
+    _235_MACLAY_ST = "235 MACLAY ST"
+    _1011_WALNUT_ST = "1011 WALNUT ST"
 
 
 class CATEGORY(Enum):
@@ -34,6 +35,7 @@ class SOURCE(Enum):
     BLUEVINE_BANK = 4
     CITI_CREDIT_CARD = 5
     CARRYOVER = 6
+    EMAIL = 7
 
 
 class TAX_DEMARCATION(Enum):
@@ -55,7 +57,7 @@ class Transaction:
         elif args.category in ("RENT", "MANAGEMENT", "MORTGAGE", "CARRYOVER"):
             self.notes = self.category
         else:
-            raise TypeError("Notes are required for nontrivial category.")
+            raise TypeError(f"Notes are required for nontrivial category: {args.category}")
 
 
 # Looking to have rows with the following columns:
@@ -104,7 +106,7 @@ parser.add_argument(
     "-a",
     "--address",
     required=False,
-    choices=KNOWN_ADDRESSES,
+    choices=[e.value for e in KNOWN_ADDRESSES],
     default="",
     type=str,
     help="Address of the property.",
@@ -125,7 +127,7 @@ parser.add_argument(
     "--amount",
     required=True,
     type=float,
-    help="Address of the property.",
+    help="The dollar amount associated with the transaction.",
 )
 parser.add_argument(
     "-n",
