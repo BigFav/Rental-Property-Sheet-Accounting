@@ -38,6 +38,7 @@ class SOURCE(Enum):
     EMAIL = 7
     PPL_SITE = 8
     UGI_SITE = 9
+    CAP_REGION_WATER_SITE = 10
 
 
 class TAX_DEMARCATION(Enum):
