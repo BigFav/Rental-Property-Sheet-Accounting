@@ -36,6 +36,8 @@ class SOURCE(Enum):
     CITI_CREDIT_CARD = 5
     CARRYOVER = 6
     EMAIL = 7
+    PPL_SITE = 8
+    UGI_SITE = 9
 
 
 class TAX_DEMARCATION(Enum):
